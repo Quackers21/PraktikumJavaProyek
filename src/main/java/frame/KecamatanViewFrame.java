@@ -3,11 +3,14 @@ package frame;
 import helpers.Koneksi;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.*;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 public class KecamatanViewFrame extends JFrame {
     private JPanel mainPanel;
@@ -58,13 +61,15 @@ public class KecamatanViewFrame extends JFrame {
                 ResultSet rs = ps.executeQuery();
                 DefaultTableModel dtm = (DefaultTableModel) viewTable.getModel();
                 dtm.setRowCount(0);
-                Object[] row = new Object[4];
+                Object[] row = new Object[6];
                 while (rs.next()) {
                     row[0] = rs.getInt("id");
                     row[1] = rs.getString("nama");
                     row[2] = rs.getString("nama_kabupaten");
                     row[3] = rs.getString("klasifikasi");
                     dtm.addRow(row);
+                    row[4] = rs.getInt("populasi");
+                    row[5] = rs.getDouble("luas");
                 }
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
@@ -143,11 +148,19 @@ public class KecamatanViewFrame extends JFrame {
         try {
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery(selectSQL);
-            String header[] = {"Id", "Nama Kecamatan", "Nama Kabupaten", "Klasifikasi"};
+            String header[] = {"Id", "Nama Kecamatan", "Nama Kabupaten", "Klasifikasi", "populasi", "luas"};
             DefaultTableModel dtm = new DefaultTableModel(header, 0);
             viewTable.setModel(dtm);
 
             viewTable.getColumnModel().getColumn(0).setMaxWidth(32);
+            viewTable.getColumnModel().getColumn(1).setMaxWidth(150);
+            viewTable.getColumnModel().getColumn(2).setMaxWidth(150);
+            viewTable.getColumnModel().getColumn(3).setMaxWidth(150);
+
+            DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
+            rightRenderer.setHorizontalAlignment(JLabel.RIGHT);
+            viewTable.getColumnModel().getColumn(4).setCellRenderer(rightRenderer);
+            viewTable.getColumnModel().getColumn(5).setCellRenderer(rightRenderer);
 
 //            //hidden kolom (tugas 1)
 //            viewTable.removeColumn(viewTable.getColumnModel().getColumn(0));
@@ -158,12 +171,19 @@ public class KecamatanViewFrame extends JFrame {
 //            viewTable.getColumnModel().getColumn(0).setMinWidth(32);
 //            viewTable.getColumnModel().getColumn(0).setPreferredWidth(100);
 
-            Object[] row = new Object[4];
+            Object[] row = new Object[6];
             while (rs.next()) {
+
+                NumberFormat nf = NumberFormat.getInstance(Locale.US);
+                String rowPopulasi = nf.format(rs.getInt("populasi"));
+                String rowLuas = String.format("%,.2f", rs.getDouble("luas"));
+
                 row[0] = rs.getInt("id");
                 row[1] = rs.getString("nama");
                 row[2] = rs.getString("nama_kabupaten");
                 row[3] = rs.getString("klasifikasi");
+                row[4] = rowPopulasi;
+                row[5] = rowLuas;
                 dtm.addRow(row);
             }
         } catch (SQLException e) {
