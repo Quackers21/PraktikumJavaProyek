@@ -144,11 +144,11 @@ public class KecamatanViewFrame extends JFrame {
 
     public void isiTable() {
         Connection c = Koneksi.getConnection();
-        String selectSQL = "SELECT K.*, B.nama AS nama_kabupaten FROM kecamatan K " + " LEFT JOIN kabupaten B ON K.kabupaten_id=B.id";
+        String selectSQL = "SELECT K.*, B.nama AS nama_kabupaten FROM kecamatan K LEFT JOIN kabupaten B ON K.kabupaten_id=B.id";
         try {
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery(selectSQL);
-            String header[] = {"Id", "Nama Kecamatan", "Nama Kabupaten", "Klasifikasi", "populasi", "luas", "email"};
+            String header[] = {"Id", "Nama Kecamatan", "Nama Kabupaten", "Klasifikasi", "populasi", "luas", "email", "tanggal Mulai"};
             DefaultTableModel dtm = new DefaultTableModel(header, 0);
             viewTable.setModel(dtm);
 
@@ -173,7 +173,7 @@ public class KecamatanViewFrame extends JFrame {
 //            viewTable.getColumnModel().getColumn(0).setMinWidth(32);
 //            viewTable.getColumnModel().getColumn(0).setPreferredWidth(100);
 
-            Object[] row = new Object[7];
+            Object[] row = new Object[8];
             while (rs.next()) {
 
                 NumberFormat nf = NumberFormat.getInstance(Locale.US);
@@ -187,6 +187,7 @@ public class KecamatanViewFrame extends JFrame {
                 row[4] = rowPopulasi;
                 row[5] = rowLuas;
                 row[6] = rs.getString("email");
+                row[7] = rs.getString("tanggalmulai");
                 dtm.addRow(row);
             }
         } catch (SQLException e) {
