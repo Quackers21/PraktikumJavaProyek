@@ -148,7 +148,7 @@ public class KecamatanViewFrame extends JFrame {
         try {
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery(selectSQL);
-            String header[] = {"Id", "Nama Kecamatan", "Nama Kabupaten", "Klasifikasi", "populasi", "luas"};
+            String header[] = {"Id", "Nama Kecamatan", "Nama Kabupaten", "Klasifikasi", "populasi", "luas", "email"};
             DefaultTableModel dtm = new DefaultTableModel(header, 0);
             viewTable.setModel(dtm);
 
@@ -162,6 +162,8 @@ public class KecamatanViewFrame extends JFrame {
             viewTable.getColumnModel().getColumn(4).setCellRenderer(rightRenderer);
             viewTable.getColumnModel().getColumn(5).setCellRenderer(rightRenderer);
 
+            viewTable.getColumnModel().getColumn(6).setMaxWidth(150);
+
 //            //hidden kolom (tugas 1)
 //            viewTable.removeColumn(viewTable.getColumnModel().getColumn(0));
 //
@@ -171,7 +173,7 @@ public class KecamatanViewFrame extends JFrame {
 //            viewTable.getColumnModel().getColumn(0).setMinWidth(32);
 //            viewTable.getColumnModel().getColumn(0).setPreferredWidth(100);
 
-            Object[] row = new Object[6];
+            Object[] row = new Object[7];
             while (rs.next()) {
 
                 NumberFormat nf = NumberFormat.getInstance(Locale.US);
@@ -184,6 +186,7 @@ public class KecamatanViewFrame extends JFrame {
                 row[3] = rs.getString("klasifikasi");
                 row[4] = rowPopulasi;
                 row[5] = rowLuas;
+                row[6] = rs.getString("email");
                 dtm.addRow(row);
             }
         } catch (SQLException e) {
