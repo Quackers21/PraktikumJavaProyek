@@ -44,22 +44,25 @@ public class KecamatanViewFrame extends JFrame {
                         "Validasi Kata Kunci kosong",
                         JOptionPane.WARNING_MESSAGE
                 );
+                cariTextField.requestFocus();
                 return;
             }
 
             Connection c = Koneksi.getConnection();
             String keyword = "%" + cariTextField.getText() + "%";
-            String searchSQL = "SELECT * FROM kecamatan WHERE nama like ?";
+            String searchSQL = "SELECT K.*, B.nama AS nama_kabupaten FROM kecamatan K LEFT JOIN kabupaten B ON K.kabupaten_id = B.id WHERE K.nama like ? OR B.nama like ?";
             try {
                 PreparedStatement ps = c.prepareStatement(searchSQL);
                 ps.setString(1, keyword);
+                ps.setString(2, keyword);
                 ResultSet rs = ps.executeQuery();
                 DefaultTableModel dtm = (DefaultTableModel) viewTable.getModel();
                 dtm.setRowCount(0);
-                Object[] row = new Object[2];
+                Object[] row = new Object[3];
                 while (rs.next()) {
                     row[0] = rs.getInt("id");
                     row[1] = rs.getString("nama");
+                    row[2] = rs.getString("nama_kabupaten");
                     dtm.addRow(row);
                 }
             } catch (SQLException ex) {
@@ -135,27 +138,30 @@ public class KecamatanViewFrame extends JFrame {
 
     public void isiTable() {
         Connection c = Koneksi.getConnection();
-        String selectSQL = "SELECT * FROM kecamatan";
+        String selectSQL = "SELECT K.*, B.nama AS nama_kabupaten FROM kecamatan K " + " LEFT JOIN kabupaten B ON K.kabupaten_id=B.id";
         try {
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery(selectSQL);
-            String header[] = {"Id", "Nama Kecamatan"};
+            String header[] = {"Id", "Nama Kecamatan", "Nama Kabupaten"};
             DefaultTableModel dtm = new DefaultTableModel(header, 0);
             viewTable.setModel(dtm);
 
-            //hidden kolom (tugas 1)
-            viewTable.removeColumn(viewTable.getColumnModel().getColumn(0));
+            viewTable.getColumnModel().getColumn(0).setMaxWidth(32);
 
-            //atur lebar kolom (tugas 1)
-            viewTable.getColumnModel().getColumn(0).setWidth(100);
-            viewTable.getColumnModel().getColumn(0).setMaxWidth(300);
-            viewTable.getColumnModel().getColumn(0).setMinWidth(32);
-            viewTable.getColumnModel().getColumn(0).setPreferredWidth(100);
+//            //hidden kolom (tugas 1)
+//            viewTable.removeColumn(viewTable.getColumnModel().getColumn(0));
+//
+//            //atur lebar kolom (tugas 1)
+//            viewTable.getColumnModel().getColumn(0).setWidth(100);
+//            viewTable.getColumnModel().getColumn(0).setMaxWidth(300);
+//            viewTable.getColumnModel().getColumn(0).setMinWidth(32);
+//            viewTable.getColumnModel().getColumn(0).setPreferredWidth(100);
 
-            Object[] row = new Object[2];
+            Object[] row = new Object[3];
             while (rs.next()) {
                 row[0] = rs.getInt("id");
                 row[1] = rs.getString("nama");
+                row[2] = rs.getString("nama_kabupaten");
                 dtm.addRow(row);
             }
         } catch (SQLException e) {
