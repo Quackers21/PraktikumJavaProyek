@@ -87,6 +87,12 @@ public class KabupatenViewFrame extends JFrame {
         });
         //end perintah hapus button
 
+        //tambah button
+        tambahButton.addActionListener(e -> {
+            KabupatenInputFrame inputFrame = new KabupatenInputFrame();
+            inputFrame.setVisible(true);
+        });
+
         isiTable();
         init();
     }
@@ -108,6 +114,16 @@ public class KabupatenViewFrame extends JFrame {
             String header[] = {"Id", "Nama Kabupaten"};
             DefaultTableModel dtm = new DefaultTableModel(header, 0);
             viewTable.setModel(dtm);
+
+            //hidden kolom (tugas 1)
+            viewTable.removeColumn(viewTable.getColumnModel().getColumn(0));
+
+            //atur lebar kolom (tugas 1)
+            viewTable.getColumnModel().getColumn(0).setWidth(100);
+            viewTable.getColumnModel().getColumn(0).setMaxWidth(300);
+            viewTable.getColumnModel().getColumn(0).setMinWidth(32);
+            viewTable.getColumnModel().getColumn(0).setPreferredWidth(100);
+
             Object[] row = new Object[2];
             while (rs.next()) {
                 row[0] = rs.getInt("id");
