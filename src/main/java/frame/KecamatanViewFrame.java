@@ -58,11 +58,12 @@ public class KecamatanViewFrame extends JFrame {
                 ResultSet rs = ps.executeQuery();
                 DefaultTableModel dtm = (DefaultTableModel) viewTable.getModel();
                 dtm.setRowCount(0);
-                Object[] row = new Object[3];
+                Object[] row = new Object[4];
                 while (rs.next()) {
                     row[0] = rs.getInt("id");
                     row[1] = rs.getString("nama");
                     row[2] = rs.getString("nama_kabupaten");
+                    row[3] = rs.getString("klasifikasi");
                     dtm.addRow(row);
                 }
             } catch (SQLException ex) {
@@ -142,7 +143,7 @@ public class KecamatanViewFrame extends JFrame {
         try {
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery(selectSQL);
-            String header[] = {"Id", "Nama Kecamatan", "Nama Kabupaten"};
+            String header[] = {"Id", "Nama Kecamatan", "Nama Kabupaten", "Klasifikasi"};
             DefaultTableModel dtm = new DefaultTableModel(header, 0);
             viewTable.setModel(dtm);
 
@@ -157,11 +158,12 @@ public class KecamatanViewFrame extends JFrame {
 //            viewTable.getColumnModel().getColumn(0).setMinWidth(32);
 //            viewTable.getColumnModel().getColumn(0).setPreferredWidth(100);
 
-            Object[] row = new Object[3];
+            Object[] row = new Object[4];
             while (rs.next()) {
                 row[0] = rs.getInt("id");
                 row[1] = rs.getString("nama");
                 row[2] = rs.getString("nama_kabupaten");
+                row[3] = rs.getString("klasifikasi");
                 dtm.addRow(row);
             }
         } catch (SQLException e) {
