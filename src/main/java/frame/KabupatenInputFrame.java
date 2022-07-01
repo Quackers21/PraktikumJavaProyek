@@ -1,5 +1,7 @@
 package frame;
 
+import com.github.lgooddatepicker.components.DatePicker;
+import com.github.lgooddatepicker.components.DatePickerSettings;
 import helpers.Koneksi;
 
 import javax.swing.*;
@@ -15,6 +17,7 @@ public class KabupatenInputFrame extends JFrame {
     private JPanel buttonPanel;
     private JButton simpanButton;
     private JButton batalButton;
+    private DatePicker tanggalDatePicker;
 
     private int id;
 
@@ -26,6 +29,7 @@ public class KabupatenInputFrame extends JFrame {
         batalButton.addActionListener(e -> {
             dispose();
         });
+        kustomisasiKomponen();
         init();
 
         //simpan
@@ -38,6 +42,16 @@ public class KabupatenInputFrame extends JFrame {
                         "Validasi data kosong",
                         JOptionPane.WARNING_MESSAGE
                 );
+                return;
+            }
+
+            String tanggal = tanggalDatePicker.getText();
+            if (tanggal.equals("")) {
+                JOptionPane.showMessageDialog(null,
+                        "Isi tanggal Mulai",
+                        "Validasi data Kosong",
+                        JOptionPane.WARNING_MESSAGE);
+                tanggalDatePicker.requestFocus();
                 return;
             }
 
@@ -55,9 +69,10 @@ public class KabupatenInputFrame extends JFrame {
                                 "Data sama sudah ada"
                         );
                     } else {
-                        String insertSQL = "INSERT INTO kabupaten VALUES (NULL, ?)";
+                        String insertSQL = "INSERT INTO kabupaten (id, nama, tgl) VALUES (NULL, ?, ?)";
                         ps = c.prepareStatement(insertSQL);
                         ps.setString(1, nama);
+                        ps.setString(2, tanggal);
                         ps.executeUpdate();
                         dispose();
                     }
@@ -73,10 +88,11 @@ public class KabupatenInputFrame extends JFrame {
                                 "Data sama sudah ada"
                         );
                     } else {
-                        String updateSQL = "UPDATE kabupaten SET nama = ? WHERE id = ?";
+                        String updateSQL = "UPDATE kabupaten SET nama = ?, tgl = ? WHERE id = ?";
                         ps = c.prepareStatement(updateSQL);
                         ps.setString(1, nama);
-                        ps.setInt(2, id);
+                        ps.setString(2, tanggal);
+                        ps.setInt(3, id);
                         ps.executeUpdate();
                         dispose();
                     }
@@ -106,10 +122,21 @@ public class KabupatenInputFrame extends JFrame {
             if (rs.next()) {
                 idTextField.setText(String.valueOf(rs.getInt("id")));
                 namaTextField.setText(rs.getString("nama"));
+                tanggalDatePicker.setText(rs.getString("tgl"));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
+
+    }
+
+    public void kustomisasiKomponen() {
+        Connection c = Koneksi.getConnection();
+
+        DatePickerSettings dps = new DatePickerSettings();
+        dps.setFormatForDatesCommonEra("yyyy-MM-dd");
+        tanggalDatePicker.setSettings(dps);
     }
 
 }

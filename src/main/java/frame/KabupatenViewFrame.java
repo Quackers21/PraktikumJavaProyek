@@ -63,6 +63,7 @@ public class KabupatenViewFrame extends JFrame {
                 while (rs.next()) {
                     row[0] = rs.getInt("id");
                     row[1] = rs.getString("nama");
+                    row[2] = rs.getString("tgl");
                     dtm.addRow(row);
                 }
             } catch (SQLException ex) {
@@ -178,23 +179,26 @@ public class KabupatenViewFrame extends JFrame {
         try {
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery(selectSQL);
-            String header[] = {"Id", "Nama Kabupaten"};
+            String header[] = {"Id", "Nama Kabupaten", "Tanggal Input"};
             DefaultTableModel dtm = new DefaultTableModel(header, 0);
             viewTable.setModel(dtm);
 
             //hidden kolom (tugas 1)
-            viewTable.removeColumn(viewTable.getColumnModel().getColumn(0));
+            viewTable.removeColumn(viewTable.getColumnModel().getColumn(0)); //jika hidden reset array
 
             //atur lebar kolom (tugas 1)
-            viewTable.getColumnModel().getColumn(0).setWidth(100);
-            viewTable.getColumnModel().getColumn(0).setMaxWidth(300);
-            viewTable.getColumnModel().getColumn(0).setMinWidth(32);
-            viewTable.getColumnModel().getColumn(0).setPreferredWidth(100);
+//            viewTable.getColumnModel().getColumn(1).setWidth(100);
+            viewTable.getColumnModel().getColumn(0).setMaxWidth(150);
+//            viewTable.getColumnModel().getColumn(1).setMinWidth(32);
+//            viewTable.getColumnModel().getColumn(1).setPreferredWidth(100);
 
-            Object[] row = new Object[2];
+            viewTable.getColumnModel().getColumn(1).setMaxWidth(150);
+
+            Object[] row = new Object[3];
             while (rs.next()) {
                 row[0] = rs.getInt("id");
                 row[1] = rs.getString("nama");
+                row[2] = rs.getString("tgl");
                 dtm.addRow(row);
             }
         } catch (SQLException e) {
